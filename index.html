@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chuck Norris Jokes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Random Chuck Norris Jokes</h1>
+    <button id="refreshButton">Refresh</button>
+    <ul id="jokeList"></ul>
+
+    <script>
+        const jokeList = document.getElementById('jokeList');
+        const refreshButton = document.getElementById('refreshButton');
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }, function(err) {
+                    console.log('Service Worker registration failed:', err);
+                });
+            });
+        }
+
+        // Fetch random joke and update UI
+        function fetchRandomJoke() {
+            fetch('https://api.chucknorris.io/jokes/random')
+                .then(response => response.json())
+                .then(data => {
+                    jokeList.innerHTML += '<li>' + data.value + '</li>';
+                })
+                .catch(err => console.log('Error fetching joke:', err));
+        }
+
+        // Refresh button click event listener
+        refreshButton.addEventListener('click', function() {
+            fetchRandomJoke();
+        });
+
+        // Service Worker message event listener
+        navigator.serviceWorker.addEventListener('message', function(event) {
+            if (event.data.command === 'updateJokes') {
+                jokeList.innerHTML = '';
+                event.data.jokes.forEach(joke => {
+                    jokeList.innerHTML += '<li>' + joke + '</li>';
+                });
+            }
+        });
+
+        // Fetch random jokes and cache them for offline use
+        if ('caches' in window) {
+            caches.open('jokes-v1').then(function(cache) {
+                cache.match('jokes').then(function(response) {
+                    if (response) {
+                        // Cached jokes found - update UI
+                        response.json().then(function(data) {
+                            jokeList.innerHTML = '';
+                            data.forEach(joke => {
+                                jokeList.innerHTML += '<li>' + joke + '</li>';
+                            });
+                        });
+                    } else {
+                        // No cached jokes found - fetch new jokes and cache them
+                        const jokes = [];
+                        for (let i = 0; i < 10; i++) {
+                            fetch('https://api.chucknorris.io/jokes/random')
+                                .then(response => response.json())
+                                .then(data => {
+                                    jokes.push(data.value);
+                                    if (jokes.length === 10) {
+                                        cache.put('jokes', new Response(JSON.stringify(jokes)));
+                                        console.log('Jokes cached!');
+                                    }
+                                })
+                                .catch(err => console.log('Error caching joke:', err));
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
