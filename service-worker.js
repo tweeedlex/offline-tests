@@ -1,43 +1,52 @@
-const CACHE_NAME = "my-cache-v1";
-const urlsToCache = ["/", "/index.html"];
+const staticCacheName = 's-app-v2'
+const dynamicCacheName = 'd-app-v2'
 
-self.addEventListener("install", (event) => {
-  // Perform install steps
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("Opened cache");
-      return cache.addAll(urlsToCache);
-    })
-  );
-});
+const assetUrls = [
+  'index.html',
+  '/js/app.js',
+  '/css/styles.css',
+  'offline.html'
+]
 
-self.addEventListener("fetch", (event) => {
-  console.log("Fetch event: ", event.request.url);
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Cache hit - return response
-      if (response) {
-        console.log("Cache hit");
-        return response;
-      }
-      
-      // Make a network request and cache the response
-      return fetch(event.request).then((response) => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== "basic") {
-          return response;
-        }
+self.addEventListener('install', async event => {
+  const cache = await caches.open(staticCacheName)
+  await cache.addAll(assetUrls)
+})
 
-        // Clone the response since it's a stream
-        const responseToCache = response.clone();
+self.addEventListener('activate', async event => {
+  const cacheNames = await caches.keys()
+  await Promise.all(
+    cacheNames
+      .filter(name => name !== staticCacheName)
+      .filter(name => name !== dynamicCacheName)
+      .map(name => caches.delete(name))
+  )
+})
 
-        // Store the response in the cache
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
+self.addEventListener('fetch', event => {
+  const {request} = event
 
-        return response;
-      });
-    })
-  );
-});
+  const url = new URL(request.url)
+  if (url.origin === location.origin) {
+    event.respondWith(cacheFirst(request))
+  } else {
+    event.respondWith(networkFirst(request))
+  }
+})
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request)
+  return cached ?? await fetch(request)
+}
+
+async function networkFirst(request) {
+  const cache = await caches.open(dynamicCacheName)
+  try {
+    const response = await fetch(request)
+    await cache.put(request, response.clone())
+    return response
+  } catch (e) {
+    const cached = await cache.match(request)
+    return cached ?? await caches.match('/offline.html')
+  }
+}
