@@ -14,13 +14,8 @@ const loginIntoApp = async () => {
 };
 
 let mongodb;
-
-window.onload = async () => {
-  await loginIntoApp();
-  mongodb = app.currentUser.mongoClient(ATLAS_SERVICE);
-  await getFunctionsTest();
-};
-
+await loginIntoApp();
+mongodb = app.currentUser.mongoClient(ATLAS_SERVICE);
 
 const testController = {
   insertOne: async (topic, questions) => {
@@ -40,12 +35,9 @@ const testController = {
       result = await mongodb
         .db("offline-tests")
         .collection("tests")
-        .find({ userId })
+        .find({ userId });
     } else {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("tests")
-        .find({})
+      result = await mongodb.db("offline-tests").collection("tests").find({});
     }
     return result;
   },
@@ -74,10 +66,7 @@ const userController = {
         .collection("users")
         .findOne({ id: userId });
     } else {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("users")
-        .find({})
+      result = await mongodb.db("offline-tests").collection("users").find({});
     }
 
     return result;
@@ -120,15 +109,13 @@ const resultController = {
         .findAll({ userId, testId });
     }
     if (!userId && !testId) {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("results")
-        .find({})
+      result = await mongodb.db("offline-tests").collection("results").find({});
     }
     return result;
   },
 };
 
+export default { test: testController, user: userController, result: resultController };
 
 const insertFunctionsTest = async () => {
   const testResponse = await testController.insertOne("Great Britain", [

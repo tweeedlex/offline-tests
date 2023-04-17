@@ -1,17 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Chuck Norris Jokes</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/realm-web@1.2.0/dist/bundle.iife.js"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
     <h1>Random Chuck Norris Jokes</h1>
     <button id="clearButton">Clear</button>
     <ul id="jokeList"></ul>
 
-    <!-- <script src="script.js"></script> -->
-    <script type="module" src="./database/index.js"></script>
-</body>
+    <script src="sw.js"></script>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="database.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("sw.js").then(
+            function (registration) {
+              console.log(
+                "ServiceWorker registration successful with scope: ",
+                registration.scope
+              );
+            },
+            function (err) {
+              console.log("ServiceWorker registration failed: ", err);
+            }
+          );
+        });
+      }
+    </script>
+  </body>
 </html>
