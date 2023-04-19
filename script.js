@@ -1,19 +1,9 @@
 import database from "./database.js";
 
-const saveTests = async () => {
-  try {
-    const tests = await database.test.get();
-    if (tests) {
-      localStorage.setItem("tests", JSON.stringify(tests));
-    } else {
-      console.log("Offline");
-    }
-  } catch (e) {
-    console.log("Error, offline");
-    console.log(e)
-  }
-}
+await database.result.get()
+await database.test.get()
+await database.user.get()
 
-await saveTests();
-
-console.log(localStorage.getItem("tests"));
+window.addEventListener("fetch", (event) => {
+  console.log(event.request);
+})

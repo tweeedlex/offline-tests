@@ -1,6 +1,16 @@
+const enableOfflineMode = () => {
+  const offlineLabel = document.getElementById("offline");
+  offlineLabel.innerHTML = "Offline mode. Couldn't connect to db";
+}
+
 const APP_ID = "offline-tests-iiwtm";
 const ATLAS_SERVICE = "mongodb-atlas";
-const app = new Realm.App({ id: APP_ID });
+let app;
+try {
+  app = new Realm.App({ id: APP_ID });
+} catch (e) {
+  enableOfflineMode();
+}
 
 const loginIntoApp = async () => {
   const credentials = Realm.Credentials.apiKey(

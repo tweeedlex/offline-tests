@@ -1,5 +1,5 @@
-const staticCacheName = "s-app-v2";
-const dynamicCacheName = "d-app-v2";
+const staticCacheName = "s-app-v15";
+const dynamicCacheName = "d-app-v15";
 
 const assetUrls = ["index.html", "script.js", "database.js", "style.css"];
 
@@ -18,33 +18,35 @@ self.addEventListener("activate", async (event) => {
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  if (event.request.url.includes("chrome-extension") || event.request.method !== "GET") {
+self.addEventListener("fetch", async (event) => {
+  if (
+    event.request.url.includes("chrome-extension") ||
+    event.request.method !== "GET"
+  ) {
     return;
   }
   const { request } = event;
 
   const url = new URL(request.url);
   if (url.origin === location.origin) {
-    event.respondWith(cacheFirst(request));
+    return event.respondWith(cacheFirst(request));
   } else {
-    event.respondWith(networkFirst(request));
+    console.log(request);
+    try {
+      const response = await fetch(request);
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  if (!navigator.onLine) {
+    event.respondWith(new Response("OFFLINE"));
+    console.log("sw offline");
+    return;
   }
 });
 
 async function cacheFirst(request) {
   const cached = await caches.match(request);
   return cached ?? (await fetch(request));
-}
-
-async function networkFirst(request) {
-  const cache = await caches.open(dynamicCacheName);
-  try {
-    const response = await fetch(request);
-    await cache.put(request, response.clone());
-    return response;
-  } catch (e) {
-    const cached = await cache.match(request);
-    return cached ?? "Offline";
-  }
 }
