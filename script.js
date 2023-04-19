@@ -1,9 +1,11 @@
 import database from "./database.js";
 
-await database.result.get()
-await database.test.get()
-await database.user.get()
+await database.result.get();
+await database.test.get();
+await database.user.get();
 
-window.addEventListener("fetch", (event) => {
-  console.log(event.request);
-})
+const button = document.querySelector("button");
+
+button.addEventListener("click", async () => {
+  const res = await database.test.get();
+});

@@ -20,8 +20,7 @@ self.addEventListener("activate", async (event) => {
 
 self.addEventListener("fetch", async (event) => {
   if (
-    event.request.url.includes("chrome-extension") ||
-    event.request.method !== "GET"
+    event.request.url.includes("chrome-extension")
   ) {
     return;
   }
@@ -31,10 +30,19 @@ self.addEventListener("fetch", async (event) => {
   if (url.origin === location.origin) {
     return event.respondWith(cacheFirst(request));
   } else {
-    console.log(request);
     try {
       const response = await fetch(request);
-      console.log(response);
+
+      // check if url ends with call that means its a database controller function
+      if (url.pathname.endsWith("call")) {
+        console.log(request)
+        const data = await response.text();
+        const cache = await caches.open(dynamicCacheName);
+        await cache.put(request, new Response(data));
+        return event.respondWith(new Response(data));
+      } else {
+        return event.respondWith(response);
+      }
     } catch (e) {
       console.log(e);
     }
