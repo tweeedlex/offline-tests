@@ -1,7 +1,7 @@
 const enableOfflineMode = () => {
   const offlineLabel = document.getElementById("offline");
   offlineLabel.innerHTML = "Offline mode. Couldn't connect to db";
-}
+};
 
 const APP_ID = "offline-tests-iiwtm";
 const ATLAS_SERVICE = "mongodb-atlas";
@@ -40,15 +40,13 @@ const testController = {
     return response;
   },
   get: async (userId) => {
-    let result;
-    if (userId) {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("tests")
-        .find({ userId });
-    } else {
-      result = await mongodb.db("offline-tests").collection("tests").find({});
-    }
+    const response = await fetch(
+      `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/test${
+        userId ? `?userId=${userId}` : ""
+      }`
+    );
+    const result = await response.text();
+    console.log(result);
     return result;
   },
 };
@@ -68,17 +66,13 @@ const userController = {
     return response;
   },
   get: async (userId) => {
-    let result;
-
-    if (userId) {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("users")
-        .findOne({ id: userId });
-    } else {
-      result = await mongodb.db("offline-tests").collection("users").find({});
-    }
-
+    const response = await fetch(
+      `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/user${
+        userId ? `?userId=${userId}` : ""
+      }`
+    );
+    const result = await response.text();
+    console.log(result);
     return result;
   },
 };
@@ -99,33 +93,23 @@ const resultController = {
     return response;
   },
   get: async (userId, testId) => {
-    let result;
-    if (userId && !testId) {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("results")
-        .findAll({ userId });
-    }
-    if (!userId && testId) {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("results")
-        .findAll({ testId });
-    }
-    if (userId && testId) {
-      result = await mongodb
-        .db("offline-tests")
-        .collection("results")
-        .findAll({ userId, testId });
-    }
-    if (!userId && !testId) {
-      result = await mongodb.db("offline-tests").collection("results").find({});
-    }
+    const response = await fetch(
+      `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/result${
+        userId ? `?userId=${userId}` : "",
+        testId ? `?testId=${testId}` : ""
+      }`
+    );
+    const result = await response.text();
+    console.log(result);
     return result;
   },
 };
 
-export default { test: testController, user: userController, result: resultController };
+export default {
+  test: testController,
+  user: userController,
+  result: resultController,
+};
 
 const insertFunctionsTest = async () => {
   const testResponse = await testController.insertOne("Great Britain", [

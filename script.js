@@ -7,5 +7,5 @@ await database.user.get();
 const button = document.querySelector("button");
 
 button.addEventListener("click", async () => {
-  const res = await database.test.get();
+  const res = await database.user.get();
 });
