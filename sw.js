@@ -1,5 +1,5 @@
-const staticCacheName = "s-app-v15";
-const dynamicCacheName = "d-app-v15";
+const staticCacheName = "s-app-v17";
+const dynamicCacheName = "d-app-v17";
 
 const assetUrls = ["index.html", "script.js", "database.js", "style.css"];
 
@@ -19,9 +19,7 @@ self.addEventListener("activate", async (event) => {
 });
 
 self.addEventListener("fetch", async (event) => {
-  if (
-    event.request.url.includes("chrome-extension")
-  ) {
+  if (event.request.url.includes("chrome-extension")) {
     return;
   }
   const { request } = event;
@@ -30,27 +28,32 @@ self.addEventListener("fetch", async (event) => {
   if (url.origin === location.origin) {
     return event.respondWith(cacheFirst(request));
   } else {
+    let responseToCache;
     try {
       const response = await fetch(request);
 
-      // check if url ends with call that means its a database controller function
-      if (url.pathname.endsWith("call")) {
-        console.log(request)
+      if (url.pathname.includes("/endpoint/")) {
         const data = await response.text();
-        const cache = await caches.open(dynamicCacheName);
-        await cache.put(request, new Response(data));
-        return event.respondWith(new Response(data));
+        if (data) {
+          console.log("data");
+          const cache = await caches.open(dynamicCacheName);
+          await cache.put(request, new Response(data));
+          responseToCache = new Response(data);
+        }
       } else {
-        return event.respondWith(response);
+        responseToCache = response.clone();
       }
     } catch (e) {
-      console.log(e);
+      if (url.pathname.includes("/endpoint/")) {
+        console.log("no internet");
+        responseToCache = await caches.match(request);
+      }
     }
-  }
-  if (!navigator.onLine) {
-    event.respondWith(new Response("OFFLINE"));
-    console.log("sw offline");
-    return;
+    if (!navigator.onLine) {
+      responseToCache = new Response("OFFLINE");
+      console.log("sw offline");
+    }
+    event.respondWith(responseToCache);
   }
 });
 

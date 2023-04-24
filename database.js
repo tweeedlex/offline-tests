@@ -19,7 +19,7 @@ const loginIntoApp = async () => {
   try {
     const user = await app.logIn(credentials);
   } catch (err) {
-    console.error("Failed to log in", err);
+    console.log("Failed to log in", err);
   }
 };
 
@@ -46,7 +46,6 @@ const testController = {
       }`
     );
     const result = await response.text();
-    console.log(result);
     return result;
   },
 };
@@ -72,7 +71,6 @@ const userController = {
       }`
     );
     const result = await response.text();
-    console.log(result);
     return result;
   },
 };
@@ -100,7 +98,6 @@ const resultController = {
       }`
     );
     const result = await response.text();
-    console.log(result);
     return result;
   },
 };
