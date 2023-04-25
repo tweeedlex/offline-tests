@@ -11,9 +11,7 @@
     <link rel="apple-touch-icon" href="icons/Test192.png" />
   </head>
   <body>
-    <div class="wrapper">
-      Test
-    </div>
+    <div class="wrapper">Test</div>
     <button id="asd">asd</button>
     <button id="insert">Insert</button>
     <span id="test"></span>
@@ -22,8 +20,10 @@
     <script src="sw.js"></script>
     <script type="module" src="script.js"></script>
     <script type="module" src="database.js"></script>
-    <script>
+    <script defer>
+      console.log(1);
       if ("serviceWorker" in navigator) {
+        console.log(2);
         window.addEventListener("load", function () {
           navigator.serviceWorker.register("sw.js").then(
             function (registration) {

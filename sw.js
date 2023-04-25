@@ -14,26 +14,35 @@ const assetUrls = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(staticCacheName).then((cache) => {
-      return cache.addAll(assetUrls);
-    })
-  );
+  try {
+    console.log("service worker installed");
+    event.waitUntil(
+      caches.open(staticCacheName).then((cache) => {
+        return cache.addAll(assetUrls);
+      })
+    );
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 self.addEventListener("activate", (event) => {
   console.log("service worker activated");
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter(
-            (name) => name !== staticCacheName && name !== dynamicCacheName
-          )
-          .map((name) => caches.delete(name))
-      );
-    })
-  );
+  try {
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter(
+              (name) => name !== staticCacheName && name !== dynamicCacheName
+            )
+            .map((name) => caches.delete(name))
+        );
+      })
+    );
+  } catch (e) {
+    console.log(e);
+  }  
 });
 
 self.addEventListener("fetch", (event) => {
