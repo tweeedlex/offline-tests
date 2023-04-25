@@ -9,6 +9,7 @@ const button = document.querySelector("button");
 button.addEventListener("click", async () => {
   const res = await database.user.get();
   console.log(res);
+  document.querySelector("#test").innerHTML = res;
 });
 
 const insertButton = document.querySelector("#insert");
