@@ -33,20 +33,28 @@ const testController = {
       topic,
       questions,
     };
-    const response = await mongodb
-      .db("offline-tests")
-      .collection("tests")
-      .insertOne(data);
-    return response;
+    try {
+      const response = await mongodb
+        .db("offline-tests")
+        .collection("tests")
+        .insertOne(data);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
   },
   get: async (userId) => {
-    const response = await fetch(
-      `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/test${
-        userId ? `?userId=${userId}` : ""
-      }`
-    );
-    const result = await response.text();
-    return result;
+    try {
+      const response = await fetch(
+        `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/test${
+          userId ? `?userId=${userId}` : ""
+        }`
+      );
+      const result = await response.text();
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
@@ -57,21 +65,28 @@ const userController = {
       password,
       group,
     };
-
-    const response = await mongodb
-      .db("offline-tests")
-      .collection("users")
-      .insertOne(data);
-    return response;
+    try {
+      const response = await mongodb
+        .db("offline-tests")
+        .collection("users")
+        .insertOne(data);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
   },
   get: async (userId) => {
-    const response = await fetch(
-      `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/user${
-        userId ? `?userId=${userId}` : ""
-      }`
-    );
-    const result = await response.text();
-    return result;
+    try {
+      const response = await fetch(
+        `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/user${
+          userId ? `?userId=${userId}` : ""
+        }`
+      );
+      const result = await response.text();
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
@@ -83,24 +98,31 @@ const resultController = {
       mark,
       time,
     };
-
-    const response = await mongodb
-      .db("offline-tests")
-      .collection("results")
-      .insertOne(data);
-    return response;
+    try {
+      const response = await mongodb
+        .db("offline-tests")
+        .collection("results")
+        .insertOne(data);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
   },
   get: async (userId, testId) => {
-    const response = await fetch(
-      `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/result${
-        userId ? `?userId=${userId}` : "",
-        testId ? `?testId=${testId}` : ""
-      }`
-    );
-    const result = await response.text();
-    return result;
+    try {
+      const response = await fetch(
+        `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/result${
+          (userId ? `?userId=${userId}` : "", testId ? `?testId=${testId}` : "")
+        }`
+      );
+      const result = await response.text();
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
+
 
 export default {
   test: testController,
