@@ -22,7 +22,7 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("service worker activated")
+  console.log("service worker activated");
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -80,5 +80,8 @@ self.addEventListener("fetch", (event) => {
 
 async function cacheFirst(request) {
   const cached = await caches.match(request);
-  return cached ?? (await fetch(request));
+  if (navigator.onLine) {
+    return fetch(request);
+  }
+  return cached ?? (await caches.match("index.html"));
 }
