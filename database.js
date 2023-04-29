@@ -31,6 +31,7 @@ const testController = {
   insertOne: async (topic, questions) => {
     const data = {
       topic,
+      code,
       questions,
     };
     try {
@@ -43,12 +44,12 @@ const testController = {
       console.log(e);
     }
   },
-  get: async (userId) => {
+  get: async (code, userId) => {
     try {
       const response = await fetch(
         `https://eu-central-1.aws.data.mongodb-api.com/app/offline-tests-iiwtm/endpoint/test${
           userId ? `?userId=${userId}` : ""
-        }`
+        }${code ? `?code=${code}` : ""}`
       );
       const result = await response.text();
       return result;
@@ -123,11 +124,10 @@ const resultController = {
   },
 };
 
-
 export default {
-  test: testController,
-  user: userController,
-  result: resultController,
+  testController,
+  userController,
+  resultController,
 };
 
 const insertFunctionsTest = async () => {

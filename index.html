@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Chuck Norris Jokes</title>
+    <title>Testorika</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/realm-web@1.2.0/dist/bundle.iife.js"></script>
@@ -9,21 +9,49 @@
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#348975" />
     <link rel="apple-touch-icon" href="icons/Test192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <div class="wrapper">Test</div>
-    <button id="asd">asd</button>
-    <button id="insert">Insert</button>
-    <span id="test"></span>
+    <div class="wrapper">
+      <header>
+        <div class="header__container">
+          <div class="logo">Testorika</div>
+        </div>
+      </header>
+
+      <main class="main">
+        <div class="main__container">
+          <div class="main__start">
+            <input
+              class="input main__input"
+              type="text"
+              name="code"
+              id="code"
+              placeholder="Enter code..."
+            />
+            <button class="button main__button" id="start">Start test</button>
+          </div>
+        </div>
+      </main>
+
+      <footer></footer>
+    </div>
 
     <!-- scripts -->
     <script src="sw.js"></script>
     <script type="module" src="script.js"></script>
     <script type="module" src="database.js"></script>
     <script defer>
-      console.log(1);
       if ("serviceWorker" in navigator) {
-        console.log(2);
         window.addEventListener("load", function () {
           navigator.serviceWorker.register("sw.js").then(
             function (registration) {
