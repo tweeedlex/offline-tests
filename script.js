@@ -15,12 +15,17 @@ const createElem = (tag, className, innerHTML = "") => {
 
 const createAnswerElem = (answer) => {
   const answerContainer = createElem("div", "answer");
-  const answerText = createElem("p", "answer__text", answer.text);
+  const answerId = `answer-${Math.floor(Math.random() * 1000000)}`; // generate unique id
   const answerCheckbox = createElem("input", "answer__checkbox");
   answerCheckbox.setAttribute("type", "checkbox");
-  answerContainer.append(answerText, answerCheckbox);
+  answerCheckbox.setAttribute("id", answerId);
+  const answerText = createElem("label", "answer__text");
+  answerText.setAttribute("for", answerId);
+  answerText.innerText = answer.text;
+  answerContainer.append(answerCheckbox, answerText);
   return answerContainer;
 };
+
 
 const createQuestionElem = (question) => {
   const questionContainer = createElem("div", "question");
@@ -33,16 +38,24 @@ const createQuestionElem = (question) => {
   return questionContainer;
 };
 
+const finishTest = () => {
+  clearPage();
+  mainContainer.innerHTML = startPage;
+};
+
 const generateTestPage = (test) => {
   const testContainer = createElem("div", "test");
   const testHeader = createElem("h1", "test__header", test.topic);
   const testQuestions = createElem("div", "test__questions");
+  const finishButton = createElem("button", "button", "Finish test");
 
   test.questions.forEach((question) => {
     testQuestions.appendChild(createQuestionElem(question));
   });
 
-  testContainer.append(testHeader, testQuestions);
+  finishButton.addEventListener("click", finishTest);
+
+  testContainer.append(testHeader, testQuestions, finishButton);
   mainContainer.appendChild(testContainer);
 };
 
@@ -53,7 +66,6 @@ const clearPage = () => {
 const startTest = async () => {
   const code = codeInput.value;
   const test = JSON.parse(await database.testController.get(code))[0];
-  console.log(test);
   clearPage();
   generateTestPage(test);
 };

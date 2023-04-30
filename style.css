@@ -146,9 +146,17 @@ main {
 .button {
   border: 2px solid #ffffff;
   border-radius: 60px;
-  padding: 12px 24px;
-  background: rgba(0, 0, 0, 0);
+  padding: 8px 20px;
+  background-color: rgba(0, 0, 0, 0);
   color: #fff;
+}
+
+.button {
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .main__input::placeholder {
@@ -181,23 +189,58 @@ h1 {
   width: 100%;
 }
 
+.test__questions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  width: 100%;
+}
+
+.answer {
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+label {
+  cursor: pointer;
+}
+
 input[type="checkbox"] {
-  border: 2px solid #000;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  outline: none;
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
-/* Customize the tick */
-input[type="checkbox"]:checked::before {
-  content: "\2713";
-  color: #fff;
-  font-size: 18px;
+input[type="checkbox"]::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  background-color: transparent;
   position: absolute;
-  top: 2px;
-  left: 3px;
+  padding: 0 0 0 3px;
 }
 
-/* Customize the background */
-input[type="checkbox"]:checked {
+input[type="checkbox"]:checked::before {
+  content: url("/img/check.png");
+  color: #fff;
 }
