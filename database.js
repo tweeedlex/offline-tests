@@ -29,6 +29,7 @@ mongodb = app.currentUser.mongoClient(ATLAS_SERVICE);
 
 const testController = {
   insertOne: async (topic, questions) => {
+    const code = Math.random().toString(36).substr(2, 5);
     const data = {
       topic,
       code,

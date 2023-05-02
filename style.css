@@ -97,20 +97,21 @@ h6 {
 
 /* ============================= */
 
-body {
+.wrapper {
   background: linear-gradient(
     196.82deg,
     #348975 11.6%,
     #1a735e 49.88%,
     #26584c 90.62%
   );
+  min-height: 100vh;
+  padding: 0 0 100px 0;
 }
 
 header {
   min-width: 100%;
   display: flex;
   align-items: center;
-  position: fixed;
   z-index: 2;
 
   --header-height: 100px;
@@ -133,7 +134,7 @@ header {
 }
 
 main {
-  padding: 100px 0 0 0;
+  padding: 20px 0 0 0;
 }
 
 .main__start {
@@ -201,15 +202,30 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 5px;
+  gap: 25px;
   width: 100%;
 }
 
+.question__img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.question__answers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .answer {
-  margin: 10px 0;
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+.finish-button {
+  margin-top: 20px;
 }
 
 label {
